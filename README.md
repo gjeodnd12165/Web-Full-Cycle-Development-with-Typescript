@@ -1,2 +1,21 @@
-<h1>MEMO</h1>
-This is a repo to memo or practice things from Dev Course.
+# 데브코스 TIL
+이 repo에서는 <span style="color: rgb(200, 255, 255)">타입스크립트로 함께하는 웹 풀 사이클 개발(React, Node.js) 2기</span>에 대한 메모 등 공부 내용을 작성한다.
+## 구성
+```
+MEMO  
+  ├─week1  
+  │  ├─part1  
+  │  ├─part2
+  │      ⋮
+  ├─week2
+  │   ⋮
+```
+MEMO에는 각 주차에 대한 디렉토리가 있고,  
+각 주차의 디렉토리에는 동영상 하나 당 "lecture[0-9]+.md" 형식의 메모를 적는다.  
+각 일차의 디렉토리의 README.md에 이번 일차에서 복습 발표에 쓸만한 내용을 작성한다. 
+
+각 주차에서 팀 주간 회고에 발표할만한 내용들을 retrospect.md에 작성한다.
+###### 참고
+- **K**eep: 좋았던 것. 그래서 유지하면 좋을 것.
+- **P**roblem: 문제였거나, 부족하거나, 아쉬웠던 것.
+- **T**ry: 시도해볼 것.
