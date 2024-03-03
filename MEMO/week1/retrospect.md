@@ -4,5 +4,4 @@
 - 강의를 다 보고 남는 시간에 무엇을 할 지 모르겠다.
 할 것을 찾자.
 ## Try
-- 아침에 일어나고 출석하기 전에 ChatGPT 혹은 다른 음성 인식? 공부 도구로 외국어(거의 영어) 공부하기  
-In my situation, I've not used verbal way. But I heared that verbal way is the fastest way to improve my foreign language skills.
+- git의 다양한 명령어들을 조사, 사용, 정리하기
