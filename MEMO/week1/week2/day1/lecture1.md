@@ -3,3 +3,9 @@
 - 기능 개발: feature/login, feature/select-product
 - 출시 준비: release-1.3, release-1.4
 - 긴급 수정: hotfix-1.2.1
+
+```cmd
+git branch -d "<브랜치 이름>"
+```
+
+으로 브랜치 삭제 명령
