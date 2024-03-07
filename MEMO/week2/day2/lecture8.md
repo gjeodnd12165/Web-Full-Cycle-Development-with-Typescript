@@ -2,7 +2,7 @@
 #### 양식(form) 태그
 ```html
 <form>
-  <input>
+  <input/>
      ⋮
 </form>
 ```

@@ -3,15 +3,22 @@
   <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="login.css"/>
   </head>
   <body>
     <h1>Login</h1>
     <form action="">
-      ID : <input type="text">
+      ID : <input type="text" id="txt_id" class="login_inputs">
       </br>
-      PW : <input type="password">
+      PW : <input type="password" class="login_inputs">
       <br>
-      <input type="button" value="로그인">
+      <input 
+        type="button"
+        value="로그인"
+        id="btn_login"
+        onclick="compareVariable()"
+      />
     </form>
+    <script type="text/javascript" src="login.js"></script>
   </body>
 </html>
