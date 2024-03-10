@@ -96,3 +96,5 @@ git worktree move <worktree> <new-path>
 ```
 git worktree remove
 ```
+
+git config에 대해서도 알아보자?
