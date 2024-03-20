@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
-app.listen(8888);
+app.listen(8888, () => {
+  console.log(`Server Started. Listen on ${8888}`);
+});
 
 
 app.get('/', (req, res) => {
@@ -9,26 +11,35 @@ app.get('/', (req, res) => {
 
 let youtuber1 = {
   channelTitle: "십오야",
-  sub: "593만명",
-  videoNum: "993개"
+  sub: 5930000,
+  videoNum: 993
 }
 let youtuber2 = {
   channelTitle: "침착맨",
-  sub: "227만명",
-  videoNum: "6.6천개"
+  sub: 2270000,
+  videoNum: 6600
 }
 let youtuber3 = {
   channelTitle: "테오",
-  sub: "54.8만명",
-  videoNum: "726개"
+  sub: 548000,
+  videoNum: 726
 }
 
 const db = new Map();
-db.set(1, youtuber1);
-db.set(2, youtuber2);
-db.set(3, youtuber3);
+let id = 1;
 
-app.get('/youtuber/:id', (req, res) => {
+db.set(id++, youtuber1);
+db.set(id++, youtuber2);
+db.set(id++, youtuber3);
+
+
+// query all the youtubers
+app.get('/youtubers', (req, res) => {
+  res.json([...db.values()]);
+});
+
+// query the youtuber by id
+app.get('/youtubers/:id', (req, res) => {
   const id = +req.params.id;
 
   const youtuber = db.get(id);
@@ -42,4 +53,18 @@ app.get('/youtuber/:id', (req, res) => {
       ...youtuber
     });
   }
-})
+});
+
+app.use(express.json()); // http 외 모듈인 미들웨어 json 설정
+// register the youtuber by id
+app.post('/youtubers', (req, res) => {
+  const { channelTitle } = req.body;
+  db.set(id++, {
+    channelTitle: channelTitle,
+    sub: 0,
+    videoNum: 0
+  });
+  res.json({
+    message: `${db.get(id-1).channelTitle} 님, 유튜버가 되신 것을 축하합니다!`
+  });
+});
