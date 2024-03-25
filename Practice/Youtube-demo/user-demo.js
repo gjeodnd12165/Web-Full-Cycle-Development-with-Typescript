@@ -4,6 +4,8 @@ app.listen(7777, () => console.log(`Server started, on port ${7777}`));
 
 app.use(express.json());
 
+
+// id -> {pwd, name}
 let db = new Map();
 
 // 로그인
@@ -50,9 +52,9 @@ app.post('/signup', (req, res) => {
 });
 // 회원 개별 조회
 app
-  .route('/users')
+  .route('/users/:id')
   .get((req, res) => {
-  const {id} = req.query;
+  const {id} = req.params;
   if (!db.has(id)) {
     res.status(404).json({
       message: "해당 유저를 찾을 수 없습니다"
@@ -64,7 +66,7 @@ app
 })
 // 회원 개별 탈퇴
   .delete((req, res) => {
-  const {id} = req.query;
+  const {id} = req.params;
   if (!db.has(id)) {
     res.status(404).json({
       message: "해당 유저를 찾을 수 없습니다"
