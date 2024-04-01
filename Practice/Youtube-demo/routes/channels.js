@@ -1,65 +1,65 @@
 const express = require('express');
 const router = express.Router();
+const conn = require('../mariadb');
 
 router.use(express.json());
 
 
-// id -> {userid, title, description}
-let db = new Map();
-let id = 1;
 
 router
   .route('/')
-  .post((req, res) => {
-    const { channelTitle, userId } = req.body;
-    if (!(channelTitle && userId)) {
-      res.status(400).json({
-        message: `양식이 잘못 되었을 수 있습니다`
+// 채널 생성
+  .post((req, res) => {        
+    const { name, userId } = req.body;
+    if (!(name && userId)) {
+      return res.status(400).json({
+        message: `양식이 잘 못 되었을 수 있습니다`
       });
     }
-    else if ([...db.keys()].includes(userId)) {
-      res.status(404).json({
-        message: `해당하는 유저가 없습니다`
-      });
-    }
-    else {
-      db.set((id++).toString(), {
-        channelTitle: channelTitle,
-        userId: userId
-      });
-      res.status(201).json({
-        message: `${channelTitle} 채널이 생성되었습니다`
-      });
-    }
-})// 채널 생성
+    
+    const sql = `INSERT INTO channels (name, user_id)
+    VALUES (?, ?)`;
+    const values = [name, userId];
+    conn.query(
+      sql, values,
+      function (err, results, fields) {
+        // users checking
+        res.status(201).json({
+          message: `${name} 채널이 생성되었습니다`
+        });
+      }
+    );
+})
+// 채널 전체 조회
   .get((req, res) => {
     const { userId } = req.body;
     if (!userId) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "로그인이 필요한 페이지입니다"
       });
     }
-    else {
-      const filtered = [...db.values()].filter((channel) => {
-        return channel.userId === userId;
-      });
-      if (!filtered.length) {
-        channelNotFound();
+
+    const sql = `SELECT * FROM channels WHERE user_id = ?`;
+    const values = [userId];
+    conn.query(
+      sql, values,
+      function (err, results, fields) {
+        if(!results?.length) {
+          channelNotFound(res);
+          return;
+        }
+        return res.status(200).json(results);
       }
-      else {
-        res.status(200).json([...db.values()].filter((channel) => {
-          return channel.userId === userId;
-        }));
-      }
-    }
-})// 채널 전체 조회
+    );
+})
 router
   .route('/:id')
+// 채널 개별 수정
   .put((req, res) => {
     const { id } = req.params;
     const { channelTitle } = req.body;
     if (!db.has(id)) {
-      channelNotFound();
+      channelNotFound(res);
     }
     else {
       const channel = db.get(id);
@@ -71,11 +71,12 @@ router
         message: `해당하는 채널이 ${channel.channelTitle}에서 ${channelTitle}로 변경되었습니다`
       });
     }
-})// 채널 개별 수정
+})
+//채널 개별 삭제
   .delete((req, res) => {
     const { id } = req.params;
     if (!db.has(id)) {
-      channelNotFound();
+      channelNotFound(res);
     }
     else {
       const { channelTitle } = db.get(id); 
@@ -84,18 +85,25 @@ router
         message: `${channelTitle} 채널이 삭제되었습니다`
       })
     }
-})//채널 개별 삭제
+})
+//채널 개별 조회
   .get((req, res) => {
     const { id } = req.params;
-    if (!db.has(id)) {
-      channelNotFound();
-    }
-    else {
-      res.status(200).json(db.get(id));
-    }
-});//채널 개별 조회
+    const sql = `SELECT * FROM channels WHERE id = ?`;
+    const values = [id];
+    conn.query(
+      sql, values,
+      function (err, results, fields) {
+        if(!results?.length) {
+          channelNotFound(res);
+          return;
+        }
+        return res.status(200).json(results[0]);
+      }
+    );
+});
 
-const channelNotFound = () => {
+const channelNotFound = (res) => {
   res.status(404).json({
     message: `해당하는 채널이 존재하지 않습니다`
   });
