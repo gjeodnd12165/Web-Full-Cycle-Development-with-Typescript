@@ -6,19 +6,41 @@ const { body, param, validationResult } = require('express-validator');
 router.use(express.json());
 
 
-const validate = (req, res) => {
+const bodyValidation = (field) => {
+  switch (field) {
+    case 'name':
+      return body('name').notEmpty().isString().withMessage('');
+    case 'userId':
+      return body('userId').notEmpty().isInt().withMessage('숫자를 입력해주세요');
+    default:
+      throw new Error(`There's no appropriate condition in bodyValidation`);
+  }
+};
+
+const paramValidation = (field) => {
+  switch (field) {
+    case 'id':
+      return param('id').notEmpty().isInt().withMessage('채널 id 오류');
+    default:
+      throw new Error(`There's no appropriate condition in paramValidation`);
+  }
+};
+
+const validate = (req, res, next) => {
   const err = validationResult(req);
   if (!err.isEmpty()) {
     return res.status(400).json(err.array());
   }
-}
+  return next(); 
+};
 
 router
   .route('/')
 // 채널 생성
   .post([
-      body('userId').notEmpty().isInt().withMessage('숫자를 입력해주세요'),
-      body('name').notEmpty().isString().withMessage('문자를 입력해주세요'),
+      bodyValidation('userId'),
+      bodyValidation('name'),
+      validate,
     ], 
     (req, res) => {
 
@@ -40,7 +62,7 @@ router
 })
 // 채널 전체 조회
   .get([
-    body('userId').notEmpty().isInt().withMessage('유저 id 필요'),
+    bodyValidation('userId'),
     validate
   ], 
   (req, res) => {
@@ -58,21 +80,22 @@ router
         return res.status(200).json(results);
       }
     );
-})
+});
 router
   .route('/:id')
 // 채널 개별 수정
   .put([
-      param('id').notEmpty().isInt().withMessage('채널 id 오류'),
-      body('channelTitle').notEmpty().isString().withMessage('새로운 타이틀 오류')
+      paramValidation('id'),
+      bodyValidation('name'),
+      validate,
     ],
     (req, res) => {
     const { id } = req.params;
-    const { channelTitle } = req.body;
+    const { name } = req.body;
     
     const sql = `UPDATE channels SET name = ?
                  WHERE id = ?`;
-    const values = [channelTitle, id];
+    const values = [name, id];
     conn.query(sql, values,
       (err, results, fields) => {
         if (err) {
@@ -87,7 +110,8 @@ router
 })
 //채널 개별 삭제
   .delete([
-    param('id').notEmpty().isInt().withMessage('채널 id 오류'),
+    paramValidation('id'),
+    validate,
   ],
   (req, res) => {
   
@@ -110,7 +134,8 @@ router
 })
 //채널 개별 조회
   .get([
-    param('id').notEmpty().isInt().withMessage('채널 id 오류')
+    paramValidation('id'),
+    validate,
   ],
     (req, res) => {
 
@@ -133,7 +158,7 @@ const channelNotFound = (res) => {
   res.status(404).json({
     message: `해당하는 채널이 존재하지 않습니다`
   });
-}
+};
 
 
 module.exports = router;
