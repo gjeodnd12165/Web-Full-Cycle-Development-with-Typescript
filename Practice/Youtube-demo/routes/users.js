@@ -49,23 +49,28 @@ router
     sql, values,
     function (err, results, fields) {
       if(!results?.length) {
-        return res.status(404).json({
+        return res.status(403).json({
           message: "아이디 또는 비밀번호가 잘 못 입력되었습니다"
         });
       }
       // results가 존재하는 것을 보장
       const loginUser = results[0];
       if (loginUser.password !== password) {
-        return res.status(404).json({
+        return res.status(403).json({
           message: "아이디 또는 비밀번호가 잘 못 입력되었습니다"
         });
       }
       const token = jwt.sign({
         email: loginUser.email,
         name: loginUser.name
-      }, process.env.ACCESS_TOKEN_KEY);
+      }, process.env.ACCESS_TOKEN_KEY, {
+        expiresIn: "5m",
+        issuer: "HDW"
+      });
       
-      res.cookie('youtube-demo', token);
+      res.cookie('youtube-demo', token, {
+        httpsOnly: true
+      });
 
       return res.status(200).json({
         message: `${loginUser.name} 님, 환영합니다`
