@@ -1,29 +1,21 @@
 const express = require('express');
 const router = express.Router();
-
+const { signup, signin, requestReset, reset} = require('../controller/UserController');
 
 router.use(express.json());
 
 router
 .post(
-  '/signup', (req, res) => {
-    res.json('회원가입');
-  }
+  '/signup', signup
 )
 .post(
-  '/signin', (req, res) => {
-    res.json('로그인');
-  }
+  '/signin', signin
 )
 .post(
-  '/reset', (req, res) => {
-    res.json('초기화요청');
-  }
+  '/reset', requestReset
 )
 .put(
-  '/reset', (req, res) => {
-    res.json('초기화');
-  }
+  '/reset', reset
 )
 
 module.exports = router;
