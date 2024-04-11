@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { signup, signin, requestReset, reset} = require('../controller/UserController');
+const { 
+  signup, signin, requestReset, reset
+} = require('../controller/UserController');
 
 router.use(express.json());
 

@@ -1,14 +1,17 @@
+/**
+ * @author 허대웅
+ */
+
 const express = require('express');
 const router = express.Router();
 const { 
-  getBooks, getBook 
-} = require('../controller/BookController');
+  getCategories
+} = require('../controller/CategoryController');
 
 router.use(express.json());
 
 router
-.get('/', getBooks)
-.get('/:bookId', getBook)
+.get('/', getCategories)
 
 
 module.exports = router;
