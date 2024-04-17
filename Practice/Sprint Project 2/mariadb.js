@@ -9,6 +9,7 @@ const connection = mysql.createConnection({
   timezone: 'Asia/Seoul',
   database: 'BookShop',
   dateStrings: true,
+  multipleStatements: true
 });
 
 module.exports = connection;
