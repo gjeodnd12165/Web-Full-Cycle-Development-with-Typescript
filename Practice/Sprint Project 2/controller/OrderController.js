@@ -12,21 +12,17 @@ const order = (req, res) => {
   let sql = `
   INSERT INTO deliveries(address, receiver, contact) VALUES (?, ?, ?);
   INSERT INTO orders (delivery_id, user_id) SELECT MAX(id), ? FROM deliveries;
+  INSERT INTO orderedBooks (order_id, book_id, quantity)
+  SELECT (SELECT MAX(id) FROM orders), 
+    book_id, 
+    quantity 
+  FROM cartItems WHERE cartItems.id IN (?);
   `;
   let values = [
     delivery.address, delivery.receiver, delivery.contact, 
-    user_id
+    user_id,
+    cart_item_ids
   ];
-  cart_item_ids.forEach((cart_item_id) => {
-    sql += `
-    INSERT INTO orderedBooks (order_id, book_id, quantity)
-    SELECT (SELECT MAX(id) FROM orders), 
-      book_id, 
-      quantity 
-    FROM cartItems WHERE cartItems.id=?;
-    `
-    values.push(cart_item_id);
-  })
 
   conn.query(
     sql, values, (err, results) => {
