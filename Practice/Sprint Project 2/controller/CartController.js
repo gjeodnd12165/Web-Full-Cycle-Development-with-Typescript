@@ -46,7 +46,7 @@ const getCartItems = (req, res) => {
   `;
   const values = [user_id];
 
-  if (selected) {
+  if (selected && !selected.length) {
     sql += ' AND cartItems.id IN (?)'
     values.push(selected);
   }
