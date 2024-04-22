@@ -45,15 +45,17 @@ const signin = (req, res) => {
     const loginUser = results[0];
     const hashedPassword = crypto.pbkdf2Sync(password, loginUser.salt, 10000, 10, 'sha512').toString('base64');
 
+    console.log(loginUser);
+    console.log(hashedPassword);
     if (!loginUser || loginUser.password !== hashedPassword) {
       return res.status(StatusCodes.UNAUTHORIZED).end();
     }
 
     const token = jwt.sign({
+      id: loginUser.id,
       email: loginUser.email,
       name: loginUser.name
     }, process.env.ACCESS_TOKEN_KEY, {
-      expiresIn: "5m",
       issuer: "HDW"
     });
     res.cookie('SprintProject2', token, {

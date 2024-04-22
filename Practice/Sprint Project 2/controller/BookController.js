@@ -2,6 +2,7 @@
  * @author 허대웅
  */
 
+const getDecodedToken = require('../getDecodedToken');
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
 
@@ -40,7 +41,8 @@ const getBooks = (req, res) => {
 
 const getBook = (req, res) => {
   const { bookId } = req.params;
-  const { userId } = req.body;
+  
+  const userId = getDecodedToken(req, res).id;
 
   const sql = `
   SELECT books.*, 

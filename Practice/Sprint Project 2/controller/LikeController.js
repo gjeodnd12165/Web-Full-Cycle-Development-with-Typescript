@@ -2,13 +2,17 @@
  * @author 허대웅
  */
 
+const getDecodedToken = require('../getDecodedToken');
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
 
+
+
 const addLike = (req, res) => {
   const { bookId } = req.params; 
-  const { userId } = req.body;
   
+  const userId = getDecodedToken(req, res).id;
+
   const sql = 'INSERT INTO likes (user_id, book_id) VALUES(?, ?)';
   const values = [userId, bookId];
   conn.query(
@@ -25,8 +29,9 @@ const addLike = (req, res) => {
 
 const removeLike = (req, res) => {
   const { bookId } = req.params; 
-  const { userId } = req.body;
   
+  const userId = getDecodedToken(req, res).id;
+
   const sql = 'DELETE FROM likes WHERE user_id=? AND book_id=?';
   const values = [userId, bookId];
   conn.query(

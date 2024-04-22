@@ -1,13 +1,15 @@
 /**
  * @author 허대웅
  */
-
+const getDecodedToken = require('../getDecodedToken');
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
 
 
 const addCartItems = (req, res) => {
-  const { bookId, quantity, userId } = req.body;
+  const { bookId, quantity } = req.body;
+
+  const userId = getDecodedToken(req, res).id;
   
   const sql = `INSERT INTO cartItems (book_id, quantity, user_id) VALUES (?, ?, ?)`;
   const values = [bookId, quantity, userId];
@@ -29,7 +31,9 @@ const addCartItems = (req, res) => {
  * @param {Response} res 
  */
 const getCartItems = (req, res) => {
-  const { userId, selected } = req.body;
+  const { selected } = req.body;
+
+  const userId = getDecodedToken(req, res).id;
 
   let sql = `
   SELECT cartItems.id,

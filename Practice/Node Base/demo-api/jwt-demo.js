@@ -6,6 +6,8 @@ const token = jwt.sign({
   foo: "bar"
 }, process.env.SECRET_KEY);
 
+console.log(token);
+
 jwt.verify(token, process.env.SECRET_KEY,
   (err, decoded) => {
     if (err) {

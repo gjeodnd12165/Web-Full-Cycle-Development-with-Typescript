@@ -2,12 +2,15 @@
  * @author 허대웅
  */
 
+const getDecodedToken = require('../getDecodedToken');
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
 
 const order = async (req, res) => {
   // cart_item의 user_id가 현재 user_id와 같을거라고 믿는다. 수정 필요.
-  const { cartItemIds, delivery, userId } = req.body;
+  const { cartItemIds, delivery } = req.body;
+  
+  const userId = getDecodedToken(req, res).id;
   
   // let sql = `
   // INSERT INTO deliveries(address, receiver, contact) VALUES (?, ?, ?);
