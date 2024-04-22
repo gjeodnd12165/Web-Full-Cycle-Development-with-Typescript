@@ -4,7 +4,6 @@
 
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
-const db2json = require('../db2json');
 
 
 const addCartItems = (req, res) => {

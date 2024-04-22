@@ -4,7 +4,6 @@
 
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
-const db2json = require('../db2json');
 
 const getBooks = (req, res) => {
   const { categoryId, recentDays, listNum = 20, page = 1 } = req.query;
@@ -35,7 +34,7 @@ const getBooks = (req, res) => {
     if (!results.length) {
       return res.status(StatusCodes.NOT_FOUND).end();
     }
-    return res.status(StatusCodes.OK).json(db2json(results));
+    return res.status(StatusCodes.OK).json(results);
   });
 }
 
@@ -65,7 +64,7 @@ const getBook = (req, res) => {
       return res.status(StatusCodes.NOT_FOUND).end();
     }
     
-    return res.status(StatusCodes.OK).json(db2json(book));
+    return res.status(StatusCodes.OK).json(book);
   });
 }
 
