@@ -4,13 +4,14 @@
 
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
+const db2json = require('../db2json');
 
 
 const addCartItems = (req, res) => {
-  const { book_id, quantity, user_id } = req.body;
+  const { bookId, quantity, userId } = req.body;
   
   const sql = `INSERT INTO cartItems (book_id, quantity, user_id) VALUES (?, ?, ?)`;
-  const values = [book_id, quantity, user_id];
+  const values = [bookId, quantity, userId];
   conn.query(
     sql, values, (err, results) => {
     if (err) {
@@ -29,7 +30,7 @@ const addCartItems = (req, res) => {
  * @param {Response} res 
  */
 const getCartItems = (req, res) => {
-  const { user_id, selected } = req.body;
+  const { userId, selected } = req.body;
 
   let sql = `
   SELECT cartItems.id,
@@ -44,7 +45,7 @@ const getCartItems = (req, res) => {
   WHERE TRUE
   AND cartItems.user_id=? 
   `;
-  const values = [user_id];
+  const values = [userId];
 
   if (selected && !selected.length) {
     sql += ' AND cartItems.id IN (?)'
@@ -71,10 +72,10 @@ const getCartItems = (req, res) => {
  * @param {Response} res 
  */
 const deleteCartItems = (req, res) => {
-  const { cartItemId: id } = req.params;
+  const { cartItemId } = req.params;
 
   const sql = `DELETE FROM cartItems WHERE id=?`;
-  const values = [id];
+  const values = [cartItemId];
   conn.query(
     sql, values, (err, results) => {
     if (err) {

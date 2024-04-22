@@ -6,11 +6,11 @@ const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
 
 const addLike = (req, res) => {
-  const { bookId: book_id } = req.params; 
-  const { user_id } = req.body;
+  const { bookId } = req.params; 
+  const { userId } = req.body;
   
   const sql = 'INSERT INTO likes (user_id, book_id) VALUES(?, ?)';
-  const values = [user_id, book_id];
+  const values = [userId, bookId];
   conn.query(
     sql, values, 
     (err, results) => {
@@ -24,11 +24,11 @@ const addLike = (req, res) => {
 }
 
 const removeLike = (req, res) => {
-  const { bookId: book_id } = req.params; 
-  const { user_id } = req.body;
+  const { bookId } = req.params; 
+  const { userId } = req.body;
   
   const sql = 'DELETE FROM likes WHERE user_id=? AND book_id=?';
-  const values = [user_id, book_id];
+  const values = [userId, bookId];
   conn.query(
     sql, values, 
     (err, results) => {

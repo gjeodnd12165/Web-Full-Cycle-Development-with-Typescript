@@ -4,26 +4,27 @@
 
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
+const db2json = require('../db2json');
 
 const getBooks = (req, res) => {
-  const { category_id, recent_days, list_num = 20, page = 1 } = req.query;
+  const { categoryId, recentDays, listNum = 20, page = 1 } = req.query;
 
   let sql = `
   SELECT books.*, categories.\`name\` AS category_name FROM books LEFT
   JOIN categories ON books.category_id = categories.id WHERE TRUE
   `;
   let values = [];
-  if (category_id) {
+  if (categoryId) {
     sql += ' AND category_id=?';
-    values.push(category_id)
+    values.push(categoryId)
   }
-  if (recent_days) {
+  if (recentDays) {
     sql += ' AND pub_date BETWEEN DATE_SUB(NOW(), INTERVAL ? DAY) AND NOW()'
-    values.push(+recent_days);
+    values.push(+recentDays);
   }
   sql += ' LIMIT ? OFFSET ?;';
-  values.push(+list_num);
-  values.push((page-1)*list_num);
+  values.push(+listNum);
+  values.push((page-1)*listNum);
 
   conn.query(
     sql, values, (err, results) => {
@@ -34,13 +35,13 @@ const getBooks = (req, res) => {
     if (!results.length) {
       return res.status(StatusCodes.NOT_FOUND).end();
     }
-    return res.status(StatusCodes.OK).json(results);
+    return res.status(StatusCodes.OK).json(db2json(results));
   });
 }
 
 const getBook = (req, res) => {
-  const { bookId: book_id } = req.params;
-  const { user_id } = req.body;
+  const { bookId } = req.params;
+  const { userId } = req.body;
 
   const sql = `
   SELECT books.*, 
@@ -52,7 +53,7 @@ const getBook = (req, res) => {
   ON books.category_id = categories.id 
   WHERE books.id = ?
   `;
-  const values = [user_id, book_id, book_id];
+  const values = [userId, bookId, bookId];
   conn.query(
     sql, values, (err, results) => {
     if (err) {
@@ -64,7 +65,7 @@ const getBook = (req, res) => {
       return res.status(StatusCodes.NOT_FOUND).end();
     }
     
-    return res.status(StatusCodes.OK).json(book);
+    return res.status(StatusCodes.OK).json(db2json(book));
   });
 }
 
