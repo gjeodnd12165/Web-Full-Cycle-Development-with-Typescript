@@ -1,13 +1,8 @@
 const jwt = require('jsonwebtoken');
-const express = require('express');
 const { StatusCodes } = require('http-status-codes')
 
 /**
- * 
- * @param {Error} err 
- * @param {Request} req 
- * @param {Response} res 
- * @param {express.NextFunction} next 
+ * Handles errors related to authorization
  */
 function handleAuthError(err, req, res, next) {
   console.error(err);

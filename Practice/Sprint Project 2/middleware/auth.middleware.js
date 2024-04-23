@@ -3,10 +3,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 /**
- * @param {Request} req 
- * @param {Response} res 
- * @returns {void}
- * 
  * decode jwt token and save it into req.token.  
  * if there's no authorization field, token will be null.
  * 

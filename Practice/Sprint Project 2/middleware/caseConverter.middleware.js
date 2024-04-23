@@ -1,11 +1,7 @@
 const _ = require('lodash');
-const express = require('express');
 
 /**
- * 
- * @param {Request} req 
- * @param {Response} res 
- * @param {express.NextFunction} next 
+ * Convert key of json in res to camelCase
  */
 function toCamel(req, res, next) {
   const json = res.json;

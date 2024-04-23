@@ -1,7 +1,3 @@
-/**
- * @author 허대웅
- */
-
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
 

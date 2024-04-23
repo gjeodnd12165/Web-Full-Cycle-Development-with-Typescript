@@ -1,7 +1,3 @@
-/**
- * @author 허대웅
- */
-
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
 
@@ -24,12 +20,6 @@ const addCartItems = (req, res) => {
   });
 }
 
-
-/**
- * @author 허대웅
- * @param {Request} req 
- * @param {Response} res 
- */
 const getCartItems = (req, res) => {
   const { selected } = req.body;
 
@@ -69,11 +59,6 @@ const getCartItems = (req, res) => {
   });
 }
 
-/**
- * @author 허대웅
- * @param {Request} req 
- * @param {Response} res 
- */
 const deleteCartItems = (req, res) => {
   const { cartItemId } = req.params;
 
