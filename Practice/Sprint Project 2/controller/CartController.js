@@ -1,7 +1,7 @@
 /**
  * @author 허대웅
  */
-const getDecodedToken = require('../getDecodedToken');
+
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
 
@@ -9,7 +9,7 @@ const { StatusCodes } = require('http-status-codes');
 const addCartItems = (req, res) => {
   const { bookId, quantity } = req.body;
 
-  const userId = getDecodedToken(req, res).id;
+  const userId = req.token.id;
   
   const sql = `INSERT INTO cartItems (book_id, quantity, user_id) VALUES (?, ?, ?)`;
   const values = [bookId, quantity, userId];
@@ -33,7 +33,7 @@ const addCartItems = (req, res) => {
 const getCartItems = (req, res) => {
   const { selected } = req.body;
 
-  const userId = getDecodedToken(req, res).id;
+  const userId = req.token.id;
 
   let sql = `
   SELECT cartItems.id,
@@ -50,7 +50,7 @@ const getCartItems = (req, res) => {
   `;
   const values = [userId];
 
-  if (selected && !selected.length) {
+  if (selected && selected.length) {
     sql += ' AND cartItems.id IN (?)'
     values.push(selected);
   }
@@ -77,8 +77,10 @@ const getCartItems = (req, res) => {
 const deleteCartItems = (req, res) => {
   const { cartItemId } = req.params;
 
-  const sql = `DELETE FROM cartItems WHERE id=?`;
-  const values = [cartItemId];
+  const userId = req.token.id;
+
+  const sql = `DELETE FROM cartItems WHERE id=? AND user_id=?`;
+  const values = [cartItemId, userId];
   conn.query(
     sql, values, (err, results) => {
     if (err) {

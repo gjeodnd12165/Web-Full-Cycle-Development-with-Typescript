@@ -2,11 +2,10 @@
  * @author 허대웅
  */
 
-const getDecodedToken = require('../getDecodedToken');
 const conn = require('../mariadb');
 const { StatusCodes } = require('http-status-codes');
 
-const getBooks = (req, res) => {
+const getBooks = async (req, res) => {
   const { categoryId, recentDays, listNum = 20, page = 1 } = req.query;
 
   let sql = `
@@ -25,36 +24,48 @@ const getBooks = (req, res) => {
   sql += ' LIMIT ? OFFSET ?;';
   values.push(+listNum);
   values.push((page-1)*listNum);
+  const [books] = await conn.promise().execute(sql, values);
 
-  conn.query(
-    sql, values, (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(StatusCodes.BAD_REQUEST).end();
+  sql = `SELECT found_rows() AS count;`;
+  const [totalBooks] = await conn.promise().execute(sql);
+
+  if (!books || !books.length) {
+    return res.status(StatusCodes.NOT_FOUND).end();
+  }
+
+  return res.status(StatusCodes.OK).json({
+    books: books,
+    paginations: {
+      totalBooks: totalBooks[0].count,
+      listNum: parseInt(listNum),
+      currentPage: parseInt(page)
     }
-    if (!results.length) {
-      return res.status(StatusCodes.NOT_FOUND).end();
-    }
-    return res.status(StatusCodes.OK).json(results);
   });
 }
 
 const getBook = (req, res) => {
   const { bookId } = req.params;
+  const userId = req.token.id;
+
+  let ph1 = "";
+  let values = [bookId];
   
-  const userId = getDecodedToken(req, res).id;
+  if (userId) {
+    ph1 = `,
+    EXISTS (SELECT * FROM likes WHERE user_id=? AND book_id=?) AS is_liked`;
+    values.unshift(userId, bookId);
+  }
 
   const sql = `
   SELECT books.*, 
     categories.\`name\` AS category_name,
-    (SELECT COUNT(*) FROM likes WHERE likes.book_id=books.id) AS likes,
-    EXISTS (SELECT * FROM likes WHERE user_id=? AND book_id=?) AS is_liked
+    (SELECT COUNT(*) FROM likes WHERE likes.book_id=books.id) AS likes${ph1}
   FROM books LEFT
   JOIN categories 
   ON books.category_id = categories.id 
   WHERE books.id = ?
   `;
-  const values = [userId, bookId, bookId];
+  console.log(values);
   conn.query(
     sql, values, (err, results) => {
     if (err) {
