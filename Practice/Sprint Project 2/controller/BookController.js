@@ -26,7 +26,8 @@ const getBooks = async (req, res) => {
   const [totalBooks] = await conn.promise().execute(sql);
 
   if (!books || !books.length) {
-    return res.status(StatusCodes.NOT_FOUND).end();
+    throw new Error("NOT FOUND");
+    // return res.status(StatusCodes.NOT_FOUND).end();
   }
 
   return res.status(StatusCodes.OK).json({

@@ -32,6 +32,7 @@ app.use('/likes', likeRouter);
 app.use('/cart', cartRouter);
 app.use('/orders', orderRouter);
 app.use('/categories', categoryRouter);
+app.use('/test/books', require('./routes/books.test'));
 
 // post-routing middlewares (including error handlers)
 const {
