@@ -6,7 +6,7 @@ const sequelize = new Sequelize({
   port: 3306,
   username: 'root',
   password: 'root',
-  timezone: 'Asia/Seoul',
+  timezone: '+09:00',
   database: 'BookShop'
 });
 

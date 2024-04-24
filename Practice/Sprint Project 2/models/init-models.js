@@ -1,4 +1,5 @@
 var DataTypes = require("sequelize").DataTypes;
+const { Sequelize } = require("sequelize");
 var _books = require("./books");
 var _cartItems = require("./cartItems");
 var _categories = require("./categories");
@@ -8,6 +9,11 @@ var _orderedBooks = require("./orderedBooks");
 var _orders = require("./orders");
 var _users = require("./users");
 
+/**
+ * 
+ * @param {Sequelize} sequelize 
+ * @returns 
+ */
 function initModels(sequelize) {
   var books = _books(sequelize, DataTypes);
   var cartItems = _cartItems(sequelize, DataTypes);
@@ -18,24 +24,24 @@ function initModels(sequelize) {
   var orders = _orders(sequelize, DataTypes);
   var users = _users(sequelize, DataTypes);
 
-  cartItems.belongsTo(books, { as: "book", foreignKey: "book_id"});
-  books.hasMany(cartItems, { as: "cartItems", foreignKey: "book_id"});
-  likes.belongsTo(books, { as: "book", foreignKey: "book_id"});
-  books.hasMany(likes, { as: "likes", foreignKey: "book_id"});
-  orderedBooks.belongsTo(books, { as: "book", foreignKey: "book_id"});
-  books.hasMany(orderedBooks, { as: "orderedBooks", foreignKey: "book_id"});
-  books.belongsTo(categories, { as: "category", foreignKey: "category_id"});
-  categories.hasMany(books, { as: "books", foreignKey: "category_id"});
-  orders.belongsTo(deliveries, { as: "delivery", foreignKey: "delivery_id"});
-  deliveries.hasMany(orders, { as: "orders", foreignKey: "delivery_id"});
-  orderedBooks.belongsTo(orders, { as: "order", foreignKey: "order_id"});
-  orders.hasMany(orderedBooks, { as: "orderedBooks", foreignKey: "order_id"});
-  cartItems.belongsTo(users, { as: "user", foreignKey: "user_id"});
-  users.hasMany(cartItems, { as: "cartItems", foreignKey: "user_id"});
-  likes.belongsTo(users, { as: "user", foreignKey: "user_id"});
-  users.hasMany(likes, { as: "likes", foreignKey: "user_id"});
-  orders.belongsTo(users, { as: "user", foreignKey: "user_id"});
-  users.hasMany(orders, { as: "orders", foreignKey: "user_id"});
+  cartItems.belongsTo(books, { foreignKey: "book_id" });
+  books.hasMany(cartItems, { foreignKey: "book_id"});
+  likes.belongsTo(books, { foreignKey: "book_id"});
+  books.hasMany(likes, { foreignKey: "book_id"});
+  orderedBooks.belongsTo(books, { foreignKey: "book_id"});
+  books.hasMany(orderedBooks, { foreignKey: "book_id"});
+  books.belongsTo(categories, { foreignKey: "category_id"});
+  categories.hasMany(books, { foreignKey: "category_id"});
+  orders.belongsTo(deliveries, { foreignKey: "delivery_id"});
+  deliveries.hasMany(orders, { foreignKey: "delivery_id"});
+  orderedBooks.belongsTo(orders, { foreignKey: "order_id"});
+  orders.hasMany(orderedBooks, { foreignKey: "order_id"});
+  cartItems.belongsTo(users, { foreignKey: "user_id"});
+  users.hasMany(cartItems, { foreignKey: "user_id"});
+  likes.belongsTo(users, { foreignKey: "user_id"});
+  users.hasMany(likes, { foreignKey: "user_id"});
+  orders.belongsTo(users, { foreignKey: "user_id"});
+  users.hasMany(orders, { foreignKey: "user_id"});
 
   return {
     books,

@@ -13,10 +13,8 @@ app.listen(process.env.SERVER_PORT, () => {
 
 // pre-routing middlewares
 const authMiddleware = require('./middleware/auth.middleware');
-const { toCamel } = require('./middleware/caseConverter.middleware');
 
 app.use(authMiddleware);
-app.use(toCamel);
 
 // routing middlewares
 const userRouter = require('./routes/users');

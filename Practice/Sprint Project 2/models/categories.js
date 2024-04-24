@@ -1,4 +1,11 @@
 const Sequelize = require('sequelize');
+
+/**
+ * 
+ * @param {Sequelize.Sequelize} sequelize 
+ * @param {Sequelize.DataTypes} DataTypes 
+ * @returns 
+ */
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('categories', {
     id: {

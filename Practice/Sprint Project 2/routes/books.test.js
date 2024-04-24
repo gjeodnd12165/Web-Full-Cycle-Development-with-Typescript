@@ -3,11 +3,13 @@ const router = express.Router();
 
 router.use(express.json());
 const {
-  getBooks
+  getBooks,
+  getBook
 } = require('../controller/BookController.test');
 
 router
-.get('/', getBooks);
+.get('/', getBooks)
+.get('/:bookId', getBook)
 
 
 module.exports = router;
