@@ -44,3 +44,7 @@ function toCamel(req, res, next) {
 위와 같은 미들웨어로 `res.json`의 모든 키 이름의 case를 변경한다.  
 
 DB 모듈을 순수 `mysql2`에서 `sequelize`로 변경하면 모듈에서 자체적으로 지원하는 것 같다.  
+
+### 진행 중
+1. sequelize 적용
+2. Typescript로 변경
