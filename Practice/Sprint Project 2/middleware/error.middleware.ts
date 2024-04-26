@@ -40,8 +40,22 @@ const handleAuthError = (
   }
 }
 
+const handleVarError = (
+  err: Error, 
+  req: express.Request,
+  res: express.Response, 
+  next: express.NextFunction
+) => {
+  if (err instanceof IdNotConvertableError) {
+    res.status(StatusCodes.BAD_REQUEST).end();
+  }
+  else {
+    next();
+  }
+}
 
 export {
   logError,
-  handleAuthError
+  handleAuthError,
+  handleVarError
 };

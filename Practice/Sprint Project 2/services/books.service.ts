@@ -5,8 +5,9 @@ import { Literal } from 'sequelize/types/utils';
 
 const models = initModels(sequelize);
 
+
 /**
- * @returns information of searched books
+ * @returns information of found books
  */
 export async function searchBooks(
   categoryId: string | undefined, 
@@ -63,7 +64,7 @@ export async function searchBooks(
 }
 
 /**
- * @returns information of searched book
+ * @returns information of found book
  */
 export async function searchBook(
   bookId: string, 

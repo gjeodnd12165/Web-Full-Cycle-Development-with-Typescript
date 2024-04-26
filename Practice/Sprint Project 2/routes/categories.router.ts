@@ -3,10 +3,8 @@ const router = express.Router();
 router.use(express.json());
 
 import {
-  getBooks,
-  getBook
-} from '../controller/books.controller';
+  getCategories
+} from '../controller/categories.controller';
 
 export default router
-.get('/', getBooks)
-.get('/:bookId', getBook)
+.get('/', getCategories);

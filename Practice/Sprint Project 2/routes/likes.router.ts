@@ -7,9 +7,6 @@ import {
   deleteUserLikeBook
 } from '../controller/likes.controller';
 
-router
+export default router
 .post('/:bookId', createUserLikeBook)
 .delete('/:bookId', deleteUserLikeBook)
-
-
-module.exports = router;
