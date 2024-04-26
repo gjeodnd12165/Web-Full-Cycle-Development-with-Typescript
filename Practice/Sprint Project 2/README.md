@@ -14,3 +14,30 @@
 
 ### 추가 추가 요구 사항
 1. [ ] 타입스크립트로 변경하기
+
+## NAMING CONVENTION
+### file name
+#### Hierarchy related files
+서비스 계층 구조에 속하는 파일들은
+> [다루는 모델 이름].[다루는 계층].ts
+로 정한다.  
+
+#### others
+현재 나머지 파일은 규칙이 없다.  
+
+### function name
+#### controller functions
+컨트롤러 함수는 각 함수가 매핑되어있는 method를 시작으로, 어떠한 것들을 다루는지 정확히 나타내어야한다.  
+예외로, post의 경우 여러 곳에서 쓰이므로 post를 시작으로 하지 않고, create 등 조금 더 자세한 기능을 나타낸다.  
+
+> getBooks: 책들의 정보를 get으로 받아오는 함수
+
+> createUserLikeBooks: 유저가 어떤 책을 좋아한다는 정보를 서버에 만들어서 저장하는 함수,  
+http method 중 create는 없으므로 post에 매핑된다.
+
+#### service functions
+서비스 함수는 각 함수가 DB에 요청하는 작업을 시작으로, 어떤 테이블에 작업을 요청하는지를 나타내어야한다.  
+예외로, select는 그 의미가 찾는다는 기능과는 상당히 동떨어져 있으므로, search로 대신한다.
+> insertLike: likes 테이블에 레코드를 하나 생성하는 함수
+
+> deleteLike: likes 테이블에 레코드를 하나 삭제하는 함수
