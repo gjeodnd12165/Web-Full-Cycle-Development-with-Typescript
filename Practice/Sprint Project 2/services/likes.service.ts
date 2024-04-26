@@ -1,6 +1,7 @@
 import { Transaction } from "sequelize";
 import { sequelize } from "../sequelize";
 import { initModels } from "../models/init-models";
+import { IdNotConvertableError } from "../errors";
 
 const models = initModels(sequelize);
 
@@ -27,7 +28,7 @@ export async function insertLike(bookId: string, userId: string) {
 
 /**
  * deletes record from Like table with specified bookId and userId
- * @returns information about DELETE
+ * @returns number of destroyed rows by DELETE
  */
 export async function deleteLike(bookId: string, userId: string) {
   if (isNaN(Number(bookId))) {
@@ -35,14 +36,14 @@ export async function deleteLike(bookId: string, userId: string) {
   }
 
   const result = await sequelize.transaction(async (t: Transaction) => {
-    const likeDeletion = await models.likes.destroy({
+    const destroyedCount = await models.likes.destroy({
       where: {
         book_id: +bookId,
         user_id: +userId
       }
     });
 
-    return likeDeletion;
+    return destroyedCount;
   });
   return result;
 }

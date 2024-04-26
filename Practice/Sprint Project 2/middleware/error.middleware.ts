@@ -1,6 +1,7 @@
 import * as express from 'express';
 import jsonwebtoken from 'jsonwebtoken';
 import { StatusCodes } from 'http-status-codes';
+import * as customErrors from '../errors';
 
 const logError = (
   err: Error, 
@@ -46,11 +47,17 @@ const handleVarError = (
   res: express.Response, 
   next: express.NextFunction
 ) => {
-  if (err instanceof IdNotConvertableError) {
-    res.status(StatusCodes.BAD_REQUEST).end();
+  if (err instanceof customErrors.IdNotConvertableError) {
+    return res.status(StatusCodes.BAD_REQUEST).end();
+  } 
+  else if (err instanceof customErrors.PasswordEqualToPrevError) {
+    return res.status(StatusCodes.BAD_REQUEST).end();
+  }
+  else if (err instanceof customErrors.UserNotFoundError) {
+    return res.status(StatusCodes.NOT_FOUND).end();
   }
   else {
-    next();
+    next(err);
   }
 }
 
