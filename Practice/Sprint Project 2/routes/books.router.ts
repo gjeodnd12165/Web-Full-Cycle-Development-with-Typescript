@@ -5,7 +5,7 @@ router.use(express.json());
 import {
   getBooks,
   getBook
-} from '../controller/BookController';
+} from '../controller/books.controller';
 
 export default router
 .get('/', getBooks)

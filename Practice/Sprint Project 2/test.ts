@@ -1,10 +1,13 @@
-import * as jwt from 'jsonwebtoken';
-import { configDotenv } from 'dotenv';
-configDotenv();
+class myError extends Error{
+  constructor(message?: string) {
+    super(message);
+    Object.setPrototypeOf(this, myError.prototype);
+    this.name = this.constructor.name;
+  }
+}
 
-const key: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJkdW1teUBtYWlsLmNvbSIsImlhdCI6MTcxMzc1MjMzNSwiaXNzIjoiSERXIn0.c30rrVckQoEHJjQLdGhbzVzGXlLoDMD5InmGT2urFpc";
+const e = new myError('mine');
 
-const decoded = jwt.verify(key, process.env.ACCESS_TOKEN_KEY) as jwt.JwtPayload;
-
-console.log(decoded);
-console.log(decoded.iat);
+console.log(e instanceof Error);
+console.log(e instanceof myError);
+console.log(e.name);

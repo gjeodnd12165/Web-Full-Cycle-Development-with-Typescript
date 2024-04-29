@@ -14,16 +14,24 @@ import decodeToken from "./middleware/auth.middleware";
 app.use(decodeToken);
 
 // routing middlewares
-import booksRouter from './routes/books';
+import booksRouter from './routes/books.router';
+import likesRouter from './routes/likes.router';
+import categoriesRouter from "./routes/categories.router";
+import usersRouter from "./routes/users.router";
 
 app.use('/books', booksRouter);
+app.use('/likes', likesRouter);
+app.use('/categories', categoriesRouter);
+app.use('/users', usersRouter);
 
 
 // post-routing middlewares (including error handlers)
 import {
   logError,
-  handleAuthError
+  handleAuthError,
+  handleVarError
 } from './middleware/error.middleware';
 
 app.use(logError);
 app.use(handleAuthError);
+app.use(handleVarError);

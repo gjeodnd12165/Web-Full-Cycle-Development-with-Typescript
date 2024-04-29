@@ -1,12 +1,13 @@
 import { Op, Transaction } from 'sequelize';
 import { initModels } from '../models/init-models';
-import { sequelize } from '../sequelize'; 
+import { sequelize } from '../sequelize';
 import { Literal } from 'sequelize/types/utils';
 
 const models = initModels(sequelize);
 
+
 /**
- * @returns information of searched books
+ * @returns information of found books
  */
 export async function searchBooks(
   categoryId: string | undefined, 
@@ -63,14 +64,14 @@ export async function searchBooks(
 }
 
 /**
- * @returns information of searched book
+ * @returns information of found book
  */
 export async function searchBook(
   bookId: string, 
   userId: string | undefined
 ) {
   if (isNaN(Number(bookId))) {
-    throw new TypeError('bookId should be able to casted to a number');
+    throw new TypeError('bookId should be able to be casted to a number');
   }
   
   const result = await sequelize.transaction(async (t: Transaction) => {
