@@ -36,14 +36,14 @@ export async function deleteLike(bookId: string, userId: string) {
   }
 
   const result = await sequelize.transaction(async (t: Transaction) => {
-    const destroyedCount = await models.likes.destroy({
+    const deleteCount = await models.likes.destroy({
       where: {
         book_id: +bookId,
         user_id: +userId
       }
     });
 
-    return destroyedCount;
+    return deleteCount;
   });
   return result;
 }

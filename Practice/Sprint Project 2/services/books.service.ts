@@ -1,5 +1,5 @@
-import { Op, Transaction } from 'sequelize';
-import { initModels } from '../models/init-models';
+import { Op, Transaction, WhereOptions } from 'sequelize';
+import { booksAttributes, initModels } from '../models/init-models';
 import { sequelize } from '../sequelize';
 import { Literal } from 'sequelize/types/utils';
 
@@ -46,7 +46,7 @@ export async function searchBooks(
         }
       ],
       attributes: {
-        include:[
+        include: [
           [sequelize.col('categories.name'), 'category_name']
         ]
       },
@@ -76,7 +76,7 @@ export async function searchBook(
   
   const result = await sequelize.transaction(async (t: Transaction) => {
 
-    let condition = {
+    let condition: WhereOptions<booksAttributes> = {
       id: +bookId
     };
 
