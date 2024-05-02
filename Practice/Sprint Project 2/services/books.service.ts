@@ -2,6 +2,7 @@ import { Op, Transaction, WhereOptions } from 'sequelize';
 import { booksAttributes, initModels } from '../models/init-models';
 import { sequelize } from '../sequelize';
 import { Literal } from 'sequelize/types/utils';
+import { IdNotConvertableError } from '../errors';
 
 const models = initModels(sequelize);
 
@@ -15,6 +16,15 @@ export async function searchBooks(
   listNum: string | undefined = '20', 
   page: string | undefined = '1'
 ) {
+  if (
+    isNaN(Number(categoryId)) ||
+    isNaN(Number(recentDays)) ||
+    isNaN(Number(listNum)) ||
+    isNaN(Number(page))
+  ) {
+    throw new IdNotConvertableError('categoryId, recentDays, listNum, page should be able to be casted to a number');
+  }
+
   const result = await sequelize.transaction(async (t: Transaction) => {
     let condition = {};
     
@@ -71,7 +81,7 @@ export async function searchBook(
   userId: string | undefined
 ) {
   if (isNaN(Number(bookId))) {
-    throw new TypeError('bookId should be able to be casted to a number');
+    throw new IdNotConvertableError('bookId should be able to be casted to a number');
   }
   
   const result = await sequelize.transaction(async (t: Transaction) => {

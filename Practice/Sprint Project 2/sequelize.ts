@@ -7,5 +7,8 @@ export const sequelize = new Sequelize({
   username: 'root',
   password: 'root',
   timezone: '+09:00',
-  database: 'BookShop'
+  database: 'BookShop',
+  define: {
+    underscored: true,
+  }
 });
