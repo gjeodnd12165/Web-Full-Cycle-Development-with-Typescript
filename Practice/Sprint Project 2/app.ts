@@ -8,14 +8,8 @@ app.listen(process.env.SERVER_PORT, () => {
   console.log(`Server started, on port ${process.env.SERVER_PORT}`)
 });
 
-const wrappingMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  return (fn: any) => fn(req, res, next).catch(next);
-};
-
-app.use(wrappingMiddleware);
-
 // pre-routing middlewares
-import decodeToken from "./middleware/auth.middleware";
+import { decodeToken } from "./middleware/auth.middleware";
 
 app.use(decodeToken);
 
@@ -34,13 +28,18 @@ app.use('/users', usersRouter);
 app.use('/cart', cartItemsRouter);
 app.use('/orders', ordersRouter);
 
-
 // post-routing middlewares (including error handlers)
 import {
   logError,
   handleAuthError,
-  handleVarError
+  handleVarError,
+  asyncWrapper
 } from './middleware/error.middleware';
+
+import {
+  wrapAllServices
+} from './wrapAllServices';
+wrapAllServices(app, asyncWrapper); // not a middleware
 
 app.use(logError);
 app.use(handleAuthError);

@@ -4,7 +4,7 @@ import { configDotenv } from "dotenv";
 configDotenv();
 import { DecodedToken } from '../types/token';
 
-const decodeToken = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
+export const decodeToken = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
   let recievedToken: string | undefined;
   let decodedToken: DecodedToken | undefined;
 
@@ -16,5 +16,3 @@ const decodeToken = (req: express.Request, res: express.Response, next: express.
 
   next();
 }
-
-export default decodeToken;

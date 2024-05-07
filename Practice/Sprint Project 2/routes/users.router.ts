@@ -9,8 +9,6 @@ import {
   patchUserPassword
 } from '../controller/users.controller';
 
-import { asyncWrapper } from '../middleware/asyncWrapper.middleware';
-
 export default router
 .post('/signup', createUser)
 .post('/signin', issueUserToken)

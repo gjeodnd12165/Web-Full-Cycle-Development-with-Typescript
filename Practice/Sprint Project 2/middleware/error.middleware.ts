@@ -61,8 +61,19 @@ const handleVarError = (
   }
 }
 
+const asyncWrapper = (fn: Function) => {
+  return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try {
+      return await fn(req, res, next);
+    } catch (err) {
+      next(err);
+    }
+  }
+} 
+
 export {
   logError,
   handleAuthError,
-  handleVarError
+  handleVarError,
+  asyncWrapper
 };
