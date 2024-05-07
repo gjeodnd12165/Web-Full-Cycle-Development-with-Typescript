@@ -43,7 +43,7 @@ export async function searchCartItems(
   cartItemIds: string[] | undefined,
   userId: string
 ) {
-
+  console.log(cartItemIds);
   if (
     cartItemIds?.filter((id: string) => isNaN(Number(id))).length ||
     isNaN(Number(userId))

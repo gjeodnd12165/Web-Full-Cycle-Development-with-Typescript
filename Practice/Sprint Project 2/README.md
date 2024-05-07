@@ -7,7 +7,7 @@
 1. [x] API문서에 맞게 response 포맷 정돈 ex.변수 명명법, status code 등 
 2. [x] 모델(데이터 모듈) 클래스 구현
     1. [x] (선택) DB 모듈 사용 ex. 몽구스, 시퀄라이즈
-3. [ ] 패키지 구조 정돈
+3. [x] 패키지 구조 정돈
     1. [x] (필수) Router, Controller
     2. [x] (선택) Service, Model
 4. [ ] 예외 처리 구현

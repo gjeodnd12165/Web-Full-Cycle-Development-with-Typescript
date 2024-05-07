@@ -12,7 +12,7 @@ import {
 import { asyncWrapper } from '../middleware/asyncWrapper.middleware';
 
 export default router
-.post('/signup', asyncWrapper(createUser))
-.post('/signin', asyncWrapper(issueUserToken))
-.post('/reset', asyncWrapper(confirmUserPassword))
-.patch('/reset', asyncWrapper(patchUserPassword))
+.post('/signup', createUser)
+.post('/signin', issueUserToken)
+.post('/reset', confirmUserPassword)
+.patch('/reset', patchUserPassword)

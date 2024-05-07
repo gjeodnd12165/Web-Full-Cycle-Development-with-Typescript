@@ -5,5 +5,8 @@ export const asyncWrapper = (fn: any) => (
   res: express.Response, 
   next: express.NextFunction
 ) => {
-  return fn(req, res, next).catch(next);
+  console.log('fn');
+  fn(req, res, next)
+    .resolve
+    .then(() => next(), next);
 } 
