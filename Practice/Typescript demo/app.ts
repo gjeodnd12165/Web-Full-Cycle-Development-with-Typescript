@@ -71,3 +71,15 @@ setInfo(std);
 function plus(a: number, b: number) {
   return a + b;
 }
+
+type strOrNum = number | string;
+
+let numStr: strOrNum = 100;
+
+function convertToString(val: strOrNum): string {
+  return val.toString();
+}
+
+let readOnlyArray: ReadonlyArray<number> = [1,2,3];
+
+let greeting: [number, string, boolean] = [1, 'help', true];
