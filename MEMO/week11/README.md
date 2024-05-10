@@ -335,3 +335,13 @@ type MyAwaited<T extends { then(onfulfuilled: unknown, ...args: unknown[]): any;
 - `infer`를 사용해서 중첩된 타입까지 접근할 수 있다는 점을 확인할 수 있다.
 - `T`의 `onfulfiled` 함수를 `F`로 지정하여 풀어해친다. thenable한지는 처음에 확인했기 때문에 상관 없지만, inferring 하기 위해 필요하다.
 - `F`가 함수라면 그 첫번째 인수를 `Awaited<T>`로 보내서 최종 결과를 받고, 아니라면 `never`를 반환하여 유니온에 포함되지 않도록 한다.
+
+### 533 - Concat
+JavaScript의 `Array.concat` 함수를 타입 시스템에서 구현하세요. 타입은 두 인수를 받고, 인수를 왼쪽부터 concat한 새로운 배열을 반환해야 합니다.
+```ts
+type Concat<T extends readonly any[], U extends readonly any[]> = [
+  ...T, ...U
+]
+```
+- 튜플을 ...으로 합칠 수 있다는 것만 알면 괸장히 쉬운 문제지만, 모르면 굉장히 어렵다.
+- ...은 타입의 경우 튜플에만 적용 가능하고, 오브젝트에는 적용하지 못한다.
