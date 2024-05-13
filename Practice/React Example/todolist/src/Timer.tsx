@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./Timer.css";
 import { ButtonGroup, Button } from "react-bootstrap";
 
-let secondsInterval: NodeJS.Timer | undefined;
-
 const Timer: React.FC = () => {
   const [seconds, setSeconds] = useState<number>(0);
+  let intervaler = useRef<NodeJS.Timer | null>(null);
 
   const handleTimerStart = () => {
-    if (!secondsInterval) {
-      secondsInterval = setInterval(() => {
+    if (!intervaler.current) {
+      intervaler.current = setInterval(() => {
         setSeconds((prev: number) => {
           return prev+1;
         });
@@ -18,11 +17,13 @@ const Timer: React.FC = () => {
   }
 
   const handleTimerStop = () => {
-    clearInterval(secondsInterval);
+    clearInterval(intervaler.current ?? undefined);
+    intervaler.current = null;
   }
 
   const handleTimerClear = () => {
-    clearInterval(secondsInterval);
+    clearInterval(intervaler.current ?? undefined);
+    intervaler.current = null;
     setSeconds(0);
   }
 

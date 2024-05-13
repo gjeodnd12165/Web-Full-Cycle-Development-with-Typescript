@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, ButtonGroup, Form } from "react-bootstrap";
 import "./TodoList.css";
 import Clock from "./Clock";
 import Timer from "./Timer";
+import DetailModal from "./DetailModal";
 
 
-type Todo = {
+export type Todo = {
   id: number;
   text: string;
+  detail?: string;
   isChecked: boolean;
 }
 
@@ -21,10 +23,10 @@ const TodoList: React.FC = () => {
 
   const [newTodo, setNewTodo] = useState<string>("");
 
-  const handleCheckedChange = (itemId: number) => {
+  const handleCheckedChange = (id: number) => () => {
     setTodos((todos: Todo[]) => {
       return todos.map((todo: Todo) => {
-        return todo.id === itemId ? {...todo, isChecked: !todo.isChecked} : todo
+        return todo.id === id ? {...todo, isChecked: !todo.isChecked} : todo
       });
     });
   }
@@ -34,6 +36,12 @@ const TodoList: React.FC = () => {
       setTodos([...todos, { id: Date.now(), text: newTodo, isChecked: false }]);
       setNewTodo("");
     }
+  }
+
+  const handleDeleteTodo = (id: number) => () => {
+    setTodos(todos.filter((todo: Todo) => {
+      return todo.id !== id;
+    }));
   }
 
   return (
@@ -54,27 +62,36 @@ const TodoList: React.FC = () => {
             onClick={handleAddTodo}
           >추가</Button>
         </Form>
-        <div className="board">
+        <Form className="board">
           <ul>
             {
-                todos.map((todo: Todo) => (
-                  <li key={todo.id}>
-                    <input type="checkbox"
-                    onChange={() => {
-                      handleCheckedChange(todo.id);
-                    }}/>
-                    <span>
-                      {
-                        todo.isChecked ?
-                        <del>{todo.text}</del> :
-                        todo.text
-                      }
-                    </span>
-                  </li>
+              todos.map((todo: Todo) => (
+                <li key={todo.id}>
+                  <Form.Check
+                  type="switch"
+                  onChange={handleCheckedChange(todo.id)}
+                />
+                  <span>
+                    {
+                      todo.isChecked ?
+                      <del>{todo.text}</del> :
+                      todo.text
+                    }
+                  </span>
+                  <ButtonGroup>
+                    <DetailModal
+                      todo={todo}
+                    ></DetailModal>
+                    <Button 
+                      variant="danger" 
+                      onClick={handleDeleteTodo(todo.id)}
+                    >삭제</Button>
+                  </ButtonGroup>
+                </li>
               ))
             }
           </ul>
-        </div>
+        </Form>
         <Clock></Clock>
         <Timer></Timer>
       </div>

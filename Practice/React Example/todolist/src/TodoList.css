@@ -24,3 +24,8 @@
   text-align: left;
   font-size: 20px;
 }
+
+.board li {
+  display: flex;
+  justify-content: space-between;
+}

@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./Clock.css";
 
 const Clock: React.FC = () => {
   const [time, setTime] = useState<Date>(new Date());
 
-  const secondInverval = setInterval(() => {
+  let secondInterval = useRef(setInterval(() => {
     setTime(new Date());
-  }, 1000);
+  }, 1000));
 
   return (
     <div className="clock">
