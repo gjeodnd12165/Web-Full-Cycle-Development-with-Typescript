@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { isCallChain } from "typescript";
+import { Button, Form } from "react-bootstrap";
+import "./TodoList.css";
+import Clock from "./Clock";
+import Timer from "./Timer";
 
 
 type Todo = {
@@ -16,6 +19,8 @@ const TodoList: React.FC = () => {
     { id: 3, text: '회의하기', isChecked: false },
   ]);
 
+  const [newTodo, setNewTodo] = useState<string>("");
+
   const handleCheckedChange = (itemId: number) => {
     setTodos((todos: Todo[]) => {
       return todos.map((todo: Todo) => {
@@ -24,10 +29,31 @@ const TodoList: React.FC = () => {
     });
   }
 
+  const handleAddTodo = () => {
+    if(newTodo.trim() !== "") {
+      setTodos([...todos, { id: Date.now(), text: newTodo, isChecked: false }]);
+      setNewTodo("");
+    }
+  }
+
   return (
     <div>
       <h1>{title}</h1>
       <div className="container">
+        <Form className="new-todo-form">
+          <Form.Control 
+            className="new-todo-input"
+            size="sm"
+            type="text" 
+            placeholder="할 일 입력"
+            onChange={(e) => setNewTodo(e.target.value)}
+          />
+          <Button 
+            className="new-todo-button"
+            variant="primary"
+            onClick={handleAddTodo}
+          >추가</Button>
+        </Form>
         <div className="board">
           <ul>
             {
@@ -49,6 +75,8 @@ const TodoList: React.FC = () => {
             }
           </ul>
         </div>
+        <Clock></Clock>
+        <Timer></Timer>
       </div>
     </div>
   )

@@ -1,0 +1,26 @@
+.new-todo-form {
+  display: flex;
+  margin: 10px;
+  writing-mode: horizontal-tb;
+}
+
+.new-todo-input {
+  margin-right: 10px;
+  writing-mode: horizontal-tb;
+}
+
+.new-todo-button {
+  white-space: nowrap;
+}
+
+.board {
+  margin: 10px;
+  padding: 10px 10px 0px;
+  background-color: aliceblue;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  color: black;
+  text-align: left;
+  font-size: 20px;
+}
