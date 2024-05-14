@@ -1,0 +1,11 @@
+### 필요한 패키지들 설치하기
+- @reduxjs/toolkit
+- redux
+- clsx: className을 동적으로 관리할 수 있는 패키지 
+- @vanilla-extract/css: .ts로 css를 사용할 수 있는 패키지
+    - @vanilla-extract/css-utils
+    - @vanilla-extract/vite-plugin
+- react-icons
+- uuid
+- react-beautiful-dnd: drag and drop을 간단히 사용할 수 있는 패키지
+- react-redux
