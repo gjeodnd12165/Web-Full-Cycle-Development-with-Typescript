@@ -255,7 +255,101 @@ export class CatsController {
 `@Res()`를 사용하여 Library-specific하게 만드는 예시이다.  
 위에서는 express를 사용하였다.  
 
+---
 
->> 지금까지 본 바로는 Nestjs가 구조를 다 짜 놔서, 따로 구조에 대해 고민할 필요가 없어 보인다.  
+지금까지 본 바로는 Nestjs가 구조를 다 짜 놔서, 따로 구조에 대해 고민할 필요가 없어 보인다.  
+: prettier, eslint가 같이 설치되어 코드의 일관성이 생기고, nest-cli를 사용하면 더 정형화된 코드를 짤 수 있다.
+
 Library-specific한 방법을 남겨놓았다는 점이 마음에 든다.  
-예시에서는 서비스를 따로 나누지 않았지만, 템플릿을 보면 나누는 구조로 되어 있어서 아무래도 기존 프로젝트를 바로 적용할 수 있지 않을까? DB에 대한 model을 어떻게 설정하는지 봐야겠다. -> TypeORM과 Sequelize에 대한 예시가 존재.
+
+예시에서는 서비스를 따로 나누지 않았지만, 템플릿을 보면 나누는 구조로 되어 있어서 아무래도 기존 프로젝트를 바로 적용할 수 있지 않을까? DB에 대한 model을 어떻게 설정하는지 봐야겠다.  
+: TypeORM과 Sequelize에 대한 예시가 존재.  
+
+---
+
+### Providers
+의존성 주입이 되는 것이 프로바이더의 주요 아이디어라고 한다.
+#### Services
+```cmd
+$ nest g service cats
+```
+@nestjs/cli를 이용하여 자동으로 서비스 구조를 만들 수 있다.
+```ts
+import { Injectable } from '@nestjs/common';
+import { Cat } from './interfaces/cat.interface';
+
+@Injectable()
+export class CatsService {
+  private readonly cats: Cat[] = [];
+
+  create(cat: Cat) {
+    this.cats.push(cat);
+  }
+
+  findAll(): Cat[] {
+    return this.cats;
+  }
+}
+```
+`@Injectable()`로 의존성 주입을 가능하게 하여 서비스에 해당하는 클래스를 생성하여 관리한다.
+
+#### Dependency injection
+```ts
+constructor(private catsService: CatsService) {}
+```
+프로바이더를 클래스로 만들기 때문에, 컨트롤러의 생성자를 사용하여 의존성 주입을 구현할 수 있다.  
+
+#### Scopes
+프로바이더는 기본적으로 어플리케이션과 같은 생명 주기를 갖지만, request-scoped, 즉 한 요청 만큼의 생명 주기를 갖게할 수도 있다. 
+|생명 주기|설명|
+|--|--|
+|`DEFAULT`|어플리케이션이 시작할 때 모든 싱글톤 프로바이더가 생성된다.|
+|`REQUEST`|각 요청 당 새로운 프로바이더가 생성되며, 요청이 끝나면 가비지 콜렉팅 된다.|
+|`TRANSIENT`|TRANSIENT 프로바이더는 컨슈머 간에 공유되지 않는다. 각 컨슈머는 새로운 인스턴스를 받는다.|
+
+#### Custom providers
+Nest는 제어 역전 컨테이너를 제공한다.  
+커스텀 프로바이더를 사용하면 제어를 Nest framework에 맡기는 것이 아니라, AppModule에서 관리하도록할 수 있다.  
+
+>> 제어 역전 및 커스텀 프로바이더에 대해서는 더 알아 보아야겠다.
+
+#### Optional providers
+```ts
+import { Injectable, Optional, Inject } from '@nestjs/common';
+
+@Injectable()
+export class HttpService<T> {
+  constructor(@Optional() @Inject('HTTP_OPTIONS') private httpClient: T) {}
+}
+```
+`@Optional()`로 해당 프로바이더를 optional하게 만들 수 있다.  
+이 경우 그 프로바이더가 존재하지 않더라도 에러가 발생하지 않는다.
+
+#### Property-based injection
+지금까지는 모두 생성자 기반 주입이었지만, 프로퍼티 기반 주입을 할 수도 있다.  
+예를 들어, 최상위 클래스가 어떠한 프로바이더를 의존하고 있고, 그 클래스를 상속받는 하위 클래스가 다수 존재할 떄, 일일이 `super()`에 적는 대신 프로퍼티를 기반으로 주입하여 이를 생략할 수 있다.
+```ts
+import { Injectable, Inject } from '@nestjs/common';
+
+@Injectable()
+export class HttpService<T> {
+  @Inject('HTTP_OPTIONS')
+  private readonly httpClient: T;
+}
+```
+
+하지만 문서에서는 해당 클래스가 어떠한 클래스에도 상속해주지 않는다면 클래스 기반 주입을 사용하는 것을 추천하고 있다.  
+
+#### Provider registration
+```ts
+import { Module } from '@nestjs/common';
+import { CatsController } from './cats/cats.controller';
+import { CatsService } from './cats/cats.service';
+
+@Module({
+  controllers: [CatsController],
+  providers: [CatsService],
+})
+export class AppModule {}
+```
+생성한 프로바이더를 사용하려면 `@Module()`에 추가해주어야한다.  
