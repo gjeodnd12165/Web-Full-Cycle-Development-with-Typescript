@@ -168,3 +168,204 @@ async createMany() {
 트랜잭션을 생성할 수 있다.  
 
 ## NestJS의 Pipe [참조](https://docs.nestjs.com/pipes)
+파이프는 `@Injecable()` 데코레이터로 감싸진 클래스이다.  
+
+파이프의 주된 용도는 두 가지이다:
+- transformation: 입력된 데이터를 다른 모양으로 바꾸기 (e.g. string to integer)
+- validation: 입력된 데이터를 검증하고, 맞으면 통과, 아니면 예외 처리  
+
+두 경우 모두, 파이프는 컨트롤러의 핸들러가 실행되기 전에 실행된다.  
+> 파이프에서 예외를 발생시킬 때에도, 예외 레이어에서 다루는 예외를 발생기키기 때문에, 결론적으로 예외가 발생하면 **어떠한 메소드도 실행되지 않는다**.
+
+### Built-in pipes
+- `ValidationPipe`
+- `ParseIntPipe`
+- `ParseFloatPipe`
+- `ParseBoolPipe`
+- `ParseArrayPipe`
+- `ParseUUIDPipe`
+- `ParseEnumPipe`
+- `DefaultValuePipe`
+- `ParseFilePipe`
+
+NestJS는 9가지의 내장 파이프를 제공한다.  
+
+### Binding pipes
+```ts
+@Get(':id')
+async findOne(@Param('id', ParseIntPipe) id: number) {
+  return this.catsService.findOne(id);
+}
+```
+`@Param()` 등의 데코레이터의 두 번째 파라미터로 파이프를 넣어 해당 값에 대해 파이프를 사용할 수 있다.  
+
+```ts
+@Get(':id')
+async findOne(
+  @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }))
+  id: number,
+) {
+  return this.catsService.findOne(id);
+}
+```
+첫 번째 예시에서는 클래스를 넘겨주어서 프레임워크에 인스턴스 생성을 맡겼는데, 그 대신 인스턴스를 넘겨주면서 옵션을 설정할 수도 있다.  
+```ts
+@Get(':uuid')
+async findOne(@Param('uuid', new ParseUUIDPipe()) uuid: string) {
+  return this.catsService.findOne(uuid);
+}
+```
+이런 `Parse*Pipe`들은 모두 비슷하게 동작한다.
+> `ParseUUID()` 같은 경우, 옵션으로 UUID의 버전을 선택할 수 있다.  
+
+### Custom pipes
+```ts
+import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+
+@Injectable()
+export class ValidationPipe implements PipeTransform {
+  transform(value: any, metadata: ArgumentMetadata) {
+    return value;
+  }
+}
+```
+커스텀 파이프를 만들려면 클래스가 `PipeTransform` 인터페이스를 구현하도록 하면 된다.  
+> `PipeTransform<T, R>`의 제네릭인 T는 파이프에 입력하는 값(value)의 타입을 나타내고, R은 출력되는 값인 transform의 반환값의 타입을 나타낸다.  
+
+`transform()`에는 두가지 매개변수가 있다.  
+- `value`
+- `metadata`
+
+value는 파이프에 입력되는 값이며, metadata는 현재 처리되는 값의 메타데이터이다.  
+metadata의 형태는 다음과 같다:
+```ts
+export interface ArgumentMetadata {
+  type: 'body' | 'query' | 'param' | 'custom';
+  metatype?: Type<unknown>;
+  data?: string;
+}
+```
+- `type`: 데이터가 `@Body()`, `@Query()`, `@Param()`, 혹은 커스텀 파라미터 중 무엇인지를 나타낸다.  
+- `metatype`: 데이터의 타입을 타나낸다. (타입을 명시하지 않았거나, vanilla js를 사용 중이라면 undefined가 된다.)
+- `data`: 데코레이터에 넘긴 문자열. 예를 들어, `@Body('string')`에서는 `'string'`이다.  
+
+> 타입스크립트의 인터페이스는 JS로 변환하면 사라지기 때문에, 파라미터의 타입이 클래스가 아니라 인터페이스로 정의되어있을 경우, `metatype`이 `Object`가 된다.  
+
+### Schema based validation
+validation을 하기 위해 다음과 같은 방법을 쓸 수도 있다:
+- 핸들러 안에서 처리: SRP를 위반하기 때문에 이상적이지 않다.
+- validator class 사용하기: 매 메소드의 시작마다 불러와야한다.
+- 미들웨어: 미들웨어는 실행 컨텍스트를 알지 못하기 때문에 validation을 위한 보편적인 미들웨어를 만들 수 없다고 한다.
+
+그렇기 때문에 validation을 위해 pipe를 사용한다.
+
+### Object schema validation
+```cmd
+$ npm install --save zod
+```
+문서에서는 zod라는 라이브러리를 사용하는 것을 권장한다.  
+
+```ts
+import { PipeTransform, ArgumentMetadata, BadRequestException } from '@nestjs/common';
+import { ZodSchema  } from 'zod';
+
+export class ZodValidationPipe implements PipeTransform {
+  constructor(private schema: ZodSchema) {}
+
+  transform(value: unknown, metadata: ArgumentMetadata) {
+    try {
+      const parsedValue = this.schema.parse(value);
+      return parsedValue;
+    } catch (error) {
+      throw new BadRequestException('Validation failed');
+    }
+  }
+}
+
+```
+ZodSchema를 주입하고, 이 스키마를 기반으로 파싱 validation을 진행한다.  
+이러면 스키마를 주입받기 때문에 스키마에 독립적이게 된다.  
+
+### Binding validation pipes
+```ts
+import { z } from 'zod';
+
+export const createCatSchema = z
+  .object({
+    name: z.string(),
+    age: z.number(),
+    breed: z.string(),
+  })
+  .required();
+
+export type CreateCatDto = z.infer<typeof createCatSchema>;
+```
+```ts
+@Post()
+@UsePipes(new ZodValidationPipe(createCatSchema))
+async create(@Body() createCatDto: CreateCatDto) {
+  this.catsService.create(createCatDto);
+}
+```
+`@UsePipes()`로 커스텀 파이프를 사용할 수 있다.  
+> `zod`를 사용하려면 `tsconfig.json`에서 `strictNullChecks`가 켜져있어야한다.  
+
+### Class validator
+```cmd
+$ npm i --save class-validator class-transformer
+```
+클래스로 validation을 할 수도 있다.  
+
+```ts
+import { IsString, IsInt } from 'class-validator';
+
+export class CreateCatDto {
+  @IsString()
+  name: string;
+
+  @IsInt()
+  age: number;
+
+  @IsString()
+  breed: string;
+}
+```
+dto 생성 시에, 데코레이터를 달면 validation에 사용할 수 있게 된다.  
+
+```ts
+import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
+
+@Injectable()
+export class ValidationPipe implements PipeTransform<any> {
+  async transform(value: any, { metatype }: ArgumentMetadata) {
+    if (!metatype || !this.toValidate(metatype)) {
+      return value;
+    }
+    const object = plainToInstance(metatype, value);
+    const errors = await validate(object);
+    if (errors.length > 0) {
+      throw new BadRequestException('Validation failed');
+    }
+    return value;
+  }
+
+  private toValidate(metatype: Function): boolean {
+    const types: Function[] = [String, Boolean, Number, Array, Object];
+    return !types.includes(metatype);
+  }
+}
+```
+여기서 주목할 것들은 다음과 같다:
+- 파이프를 비동기로 만들 수 있다.  
+- `metatype`을 비구조화로 꺼내 쓴다.
+- `toValidate()`에서는 native JS 타입이라면 데코레이터가 있을 수 없기 때문에 이들에 대해서는 validation을 건너뛰게하고 있다.  
+- `class-transform`의 `plainToInstance`를 사용하여 타입을 달아준다.  
+네트워크 요청을 역직렬화한 객체에는 타입에 대한 정보가 없기 때문에 DTO에 달아준 데코레이터로 타입을 달아줘야한다.  
+- 위에서 말한것처럼, 에러를 발생시키거나 받은 데이터를 그대로 반환한다.  
+
+
+> `ValidationPipe`는 여기서 만든 것들보다 더 많은 옵션을 제공하기 때문에 이런 파이프를 직접 만들 필요는 없지만, 커스텀 파이프를 만드는 방법을 보여주기 위해 이러한 것들을 만들었다고 한다.
+
+
