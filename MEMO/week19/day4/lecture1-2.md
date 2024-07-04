@@ -1,1 +1,11 @@
 ### FE 구조 설계서와 상세 설계서
+- 개관 사항
+    - Main Framework
+    - State Management Library
+    - Style Library
+    - ...
+- 디렉토리 구조
+- 페이지 URL 구조 설계
+- Components 구조 설계
+- API 함수 구조 설계
+- Utility 설계
