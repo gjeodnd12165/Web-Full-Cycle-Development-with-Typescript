@@ -45,4 +45,4 @@ body:
   - type: markdown
     attributes:
       value: |
-        ### 오른쪽의 `Assignees`, `Labels`, `Projects` 등이 제대로 설정되어 있는지 확인하세요!
+        ### 오른쪽의 Assignees, Labels, Projects 등이 제대로 설정되어 있는지 확인하세요!
