@@ -1,14 +1,10 @@
 name: 💡 기능 제안
 description: 새로운 기능을 제안해주세요
+title: "[Feature] "
 assignees: ["gjeodnd12165"]
 projects: ["Colosseum"]
 labels: ["enhancement"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        새로운 기능을 제안합니다
-
   - type: textarea
     id: problem
     attributes:
@@ -45,3 +41,8 @@ body:
         - 높음
     validations:
       required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### 오른쪽의 `Assignees`, `Labels`, `Projects` 등이 제대로 설정되어 있는지 확인하세요!
