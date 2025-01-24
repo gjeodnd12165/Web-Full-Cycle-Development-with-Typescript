@@ -1,0 +1,64 @@
+name: 🐛 버그 리포트
+description: 버그를 제보해주세요
+title: 디폴트
+assignees: ["gjeodnd12165"]
+projects: ["Colosseum"]
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        버그를 제보합니다
+        
+  - type: textarea
+    id: description
+    attributes:
+      label: 버그 설명
+      description: 버그가 어떤 상황에서 발생했는지 설명해주세요
+      placeholder: 명확하고 자세하게 설명해주세요
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 재현 방법
+      description: 버그를 재현하는 단계를 설명해주세요
+      placeholder: |
+        1. '...'로 이동
+        2. '....'를 클릭
+        3. '....'로 스크롤
+        4. 에러 발생
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: 버전
+      description: 이 버그가 발생한 앱 버전을 적어주세요
+      placeholder: 예) 1.3.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: 브라우저
+      description: 어떤 브라우저에서 발생했나요?
+      multiple: true
+      options:
+        - Chrome
+        - Safari
+        - Firefox
+        - Edge
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 로그
+      description: 관련된 로그가 있다면 첨부해주세요
+      render: shell
