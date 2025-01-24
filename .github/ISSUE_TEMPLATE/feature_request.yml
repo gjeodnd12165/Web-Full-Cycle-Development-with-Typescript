@@ -1,0 +1,47 @@
+name: 💡 기능 제안
+description: 새로운 기능을 제안해주세요
+assignees: ["gjeodnd12165"]
+projects: ["Colosseum"]
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        새로운 기능을 제안합니다
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 관련 문제
+      description: 이 기능이 해결하고자 하는 문제가 무엇인가요?
+      placeholder: 명확하고 자세하게 설명해주세요
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 제안하는 해결책
+      description: 어떤 해결책을 제안하시나요?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 대안
+      description: 고려해본 대안이 있다면 설명해주세요
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 우선순위
+      description: 이 기능의 우선순위는 어느 정도인가요?
+      options:
+        - 낮음
+        - 중간
+        - 높음
+    validations:
+      required: true
